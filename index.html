@@ -29,5 +29,10 @@
 
   canvas.add(rect)
 
+  fabric.Object.prototype.getAngleInRadians = function () {
+    return this.get('angle') / 180 * Math.PI
+  }
+  console.log(rect.getAngleInRadians())
+
 </script>
 </html>

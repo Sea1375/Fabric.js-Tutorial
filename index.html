@@ -9,30 +9,17 @@
 <canvas id="c"></canvas>
 </body>
 <script>
-  var canvas = new fabric.Canvas('c')
-
-  var rect = new fabric.Rect({
-    left: 100,
-    top: 100,
-    fill: 'red',
-    width: 20,
-    height: 20,
-    angle: 45
+  var canvas = new fabric.Canvas('c', {
+    backgroundColor: 'rgb(100, 100, 200)',
+    selectionColor: 'blue',
+    selectionLineWidth: 2
   })
-
-  rect.set('fill', 'red')
-  rect.set({
-    strokeWidth: 5,
-    stroke: 'rgba(100, 200, 200, 0.5)'
-  })
-  rect.set('angle', 15).set('flipY', true)
+  var rect = new fabric.Rect({width: 20, height: 20})
 
   canvas.add(rect)
-
-  fabric.Object.prototype.getAngleInRadians = function () {
-    return this.get('angle') / 180 * Math.PI
-  }
-  console.log(rect.getAngleInRadians())
+  console.log(canvas.item(0))
+  console.log(canvas.getObjects())
+  canvas.remove(canvas.item(0))
 
 </script>
 </html>

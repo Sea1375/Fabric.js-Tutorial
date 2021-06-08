@@ -6,20 +6,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.4.0/fabric.min.js"></script>
 </head>
 <body>
-<canvas id="c"></canvas>
+<canvas id="c" width="500" height="500"></canvas>
 </body>
 <script>
-  var canvas = new fabric.Canvas('c', {
-    backgroundColor: 'rgb(100, 100, 200)',
-    selectionColor: 'blue',
-    selectionLineWidth: 2
+  var canvas = new fabric.Canvas('c')
+  fabric.Image.fromURL('1.jpg', function (oImg) {
+    oImg.scale(0.5).set('flipX', true)
+    canvas.add(oImg)
   })
-  var rect = new fabric.Rect({width: 20, height: 20})
-
-  canvas.add(rect)
-  console.log(canvas.item(0))
-  console.log(canvas.getObjects())
-  canvas.remove(canvas.item(0))
-
 </script>
 </html>

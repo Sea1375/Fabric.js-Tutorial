@@ -6,24 +6,90 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.4.0/fabric.min.js"></script>
 </head>
 <body>
-<canvas id="c" width="500" height="500"></canvas>
+<canvas style="-moz-user-select: none; cursor: crosshair;" width="400" height="400" id="c1"></canvas>
+<button id="cropB">crop</button>
 </body>
 <script>
-  var canvas = new fabric.Canvas('c')
-  var rect = new fabric.Rect({width: 50, height: 50})
-  canvas.add(rect)
+  var image
+  var canvas = new fabric.Canvas('c1')
+  canvas.on('mouse:down', function (e) { mousedown(e) })
+  canvas.on('mouse:move', function (e) { mousemove(e) })
+  canvas.on('mouse:up', function (e) { mouseup(e) })
+  var src = 'http://fabricjs.com/lib/pug.jpg'
+  canvas.backgroundColor = '#333'
+  canvas.renderAll()
 
-  rect.set('angle', 45)
-
-  rect.animate('left', '+=100', {
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 1000,
-    easing: fabric.util.ease.easeOutBounce
+  var square = new fabric.Rect({
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+    fill: 'transparent',
+    borderColor: 'transparent',
+    opacity: 1,
+    stroke: '#ccc',
+    strokeDashArray: [2, 2],
+    selectable: false
   })
-  rect.animate('angle', '-=45', {
-    onChange: canvas.renderAll.bind(canvas),
-    duration: 1000,
-    easing: fabric.util.ease.easeOutBounce
+  square.hasControls = false
+  canvas.add(square)
+
+  var object = new fabric.Image.fromURL(src, function (img) {
+    image = img
+    img.set({
+      left: 0,
+      top: 0,
+      selectable: false,
+      scaleX: 400 / img.width,
+      scaleY: 400 / img.height
+    })
+    canvas.add(img)
+    canvas.renderAll()
+  })
+
+  var started = false
+  var x = 0, y = 0
+
+  function mousedown(e) {
+    var mouse = canvas.getPointer(e)
+    started = true
+    x = mouse.x
+    y = mouse.y
+
+    square.set({ left: x, top: y})
+    canvas.renderAll()
+    canvas.setActiveObject(square)
+  }
+
+  function mousemove(e) {
+    if (!started) return false
+    var mouse = canvas.getPointer(e)
+
+    var w = Math.abs(mouse.x - x), h = Math.abs(mouse.y - y)
+
+    if (!w || !h) return false
+
+    square.set('width', w).set('height', h)
+    canvas.renderAll()
+  }
+
+  function mouseup(e) {
+    if (started) started = false
+  }
+
+
+  document.getElementById('cropB').addEventListener('click', function (event) {
+    var rect = new fabric.Rect({
+      left: square.left,
+      top: square.top,
+      width: square.width,
+      height: square.height,
+      absolutePositioned: true
+    })
+    image.clipPath = rect
+    // canvas.add(image)
+    canvas.renderAll()
   })
 </script>
 </html>
+
